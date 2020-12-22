@@ -27,7 +27,7 @@ INTERIOR_BASIC = [
     "Wisp x3",
     "Liche",
 ]
-INTERIOR_STANDART = [
+INTERIOR_STANDARD = [
     "Hellhound x2",
     "Hellhound, Killer",
     "Skunk x2",
@@ -87,13 +87,13 @@ class Floor:
     def __init__(self, level):
         self.level = level
         self.is_edge = True
-        self.childs = []
+        self.children = []
         self.id = 0
         self.occupancy = -1
 
     def addChild(self, floor):
         self.is_edge = False
-        self.childs.append(floor)
+        self.children.append(floor)
 
 
 class FloorSelector:
@@ -126,17 +126,17 @@ def writePrintOffset(floor, currOffset):
     floor.offset = currOffset
     if floor.is_edge:
         return currOffset
-    if len(floor.childs) > 0:
-        currOffset = writePrintOffset(floor.childs[0], currOffset)
-    for i in range(1, len(floor.childs)):
-        currOffset = writePrintOffset(floor.childs[i], currOffset + 1)
+    if len(floor.children) > 0:
+        currOffset = writePrintOffset(floor.children[0], currOffset)
+    for i in range(1, len(floor.children)):
+        currOffset = writePrintOffset(floor.children[i], currOffset + 1)
     return currOffset
 
 
 # -1 right, -2 down
 def printArchitectureMakeConnection(floor, netmap):
     netmap[(floor.level - 1) * 2][floor.offset * 2] = floor.id
-    for child in floor.childs:
+    for child in floor.children:
         for i in range(floor.offset * 2 + 1, child.offset * 2):
             netmap[(floor.level - 1) * 2][i] = -1
         for j in range((floor.level - 1) * 2 + 1, (child.level - 1) * 2):
@@ -191,7 +191,7 @@ def printArchitecture(floors):
 
 
 """
-# minimal size is 5 for 1 Branche,
+# minimal size is 5 for 1 Branch,
 1 entry, 2 second floor, 3 last floor, 4 - nonBranched floor, 5 - 1st possible branch
 So maximal branches is: size - 4
 """
@@ -284,13 +284,13 @@ def getArchitecture():
     return all_floors
 
     # for floor in all_floors:
-    # 	print (f"level:{floor.level},edge:{floor.is_edge},childs:{len(floor.childs)}")
+    # 	print (f"level:{floor.level},edge:{floor.is_edge},children:{len(floor.children)}")
 
 
 def setID(floor, cnt):
     cnt += 1
     floor.id = cnt
-    for child in floor.childs:
+    for child in floor.children:
         cnt = setID(child, cnt)
     return cnt
 
@@ -303,7 +303,7 @@ def populateLevel(floorRandom, floors):
     nextLevel = []
     for floor in floors:
         floor.occupancy = floorRandom.getRandom()
-        nextLevel += floor.childs
+        nextLevel += floor.children
     if len(nextLevel) > 0:
         populateLevel(floorRandom, nextLevel)
 
@@ -315,53 +315,53 @@ def populateFloors(floors):
         second = rollD6()
     floor = floors[0]
     floor.occupancy = first
-    floor = floor.childs[0]
+    floor = floor.children[0]
     floor.occupancy = second
 
     floorRandom = FloorSelector()
-    populateLevel(floorRandom, floor.childs)
+    populateLevel(floorRandom, floor.children)
 
 
-def getDificulty():
-    print("Please select dificulty")
+def getDifficulty():
+    print("Please select difficulty")
     print(
-        "1-Basic Difficulty    | DV6  | Normal interface level 2 | Deadly bottom inteface level: N/A"
+        "1-Basic Difficulty    | DV6  | Normal interface level 2 | Deadly bottom interface level: N/A"
     )
     print(
-        "2-Standart Difficulty | DV8  | Normal interface level 4 | Deadly bottom inteface level: 2"
+        "2-Standard Difficulty | DV8  | Normal interface level 4 | Deadly bottom interface level: 2"
     )
     print(
-        "3-Uncommon Difficulty | DV10 | Normal interface level 6 | Deadly bottom inteface level: 4"
+        "3-Uncommon Difficulty | DV10 | Normal interface level 6 | Deadly bottom interface level: 4"
     )
     print(
-        "4-Advanced Difficulty | DV12 | Normal interface level 8 | Deadly bottom inteface level: 6"
+        "4-Advanced Difficulty | DV12 | Normal interface level 8 | Deadly bottom interface level: 6"
     )
     try:
-        dificulty = int(input("Dificulty:"))
+        difficulty = int(input("Difficulty:"))
     except:
         print("\n!!ERROR!!")
         print("Provide numbers between 1 and 4")
         print("!!ERROR!!\n")
-        return getDificulty()
-    if not (dificulty >= 1 and dificulty <= 4):
+        return getDifficulty()
+    if not (difficulty >= 1 and difficulty <= 4):
         print("\n!!ERROR!!")
         print("Provide numbers between 1 and 4")
         print("!!ERROR!!\n")
-        return getDificulty()
-    return dificulty
+        return getDifficulty()
+    return difficulty
 
 
 def printLegendRecursive(floor, difficulty):
     if difficulty == 1:
         occupancy = INTERIOR_BASIC[floor.occupancy - 3]
     elif difficulty == 2:
-        occupancy = INTERIOR_STANDART[floor.occupancy - 3]
+        occupancy = INTERIOR_STANDARD[floor.occupancy - 3]
     elif difficulty == 3:
         occupancy = INTERIOR_UNCOMMON[floor.occupancy - 3]
     elif difficulty == 4:
         occupancy = INTERIOR_ADVANCED[floor.occupancy - 3]
     print(f"{floor.id}: {occupancy}")
-    for child in floor.childs:
+    for child in floor.children:
         printLegendRecursive(child, difficulty)
 
 
@@ -369,9 +369,9 @@ def printLegend(floors, difficulty):
     print("Legend:")
     floor = floors[0]
     print(f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}")
-    floor = floor.childs[0]
+    floor = floor.children[0]
     print(f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}")
-    for child in floor.childs:
+    for child in floor.children:
         printLegendRecursive(child, difficulty)
 
 
@@ -392,7 +392,7 @@ def on_press(key):
 
 exitApp = False
 while not exitApp:
-    difficulty = getDificulty()
+    difficulty = getDifficulty()
     all_floors = getArchitecture()
     setIDs(all_floors)
     populateFloors(all_floors)
