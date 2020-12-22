@@ -27,7 +27,7 @@ class FloorSelector:
 		while(self.selected[rolled]):
 			rolled = roll3D6()
 		self.selected[rolled] = True
-		return rolled 
+		return rolled
 
 def rollD6():
 	return random.randint(1,6)
@@ -100,13 +100,13 @@ def printArchitecture(floors):
 			if hit == -1:
 				strRow += "--"
 			if hit == -2:
-				strRow += "| " 
+				strRow += "| "
 		print (strRow)
 
 '''
-# minimal size is 5 for 1 Branche, 
+# minimal size is 5 for 1 Branche,
 1 entry, 2 second floor, 3 last floor, 4 - nonBranched floor, 5 - 1st possible branch
-So maximal branches is: size - 4  
+So maximal branches is: size - 4
 '''
 def getNumberOfBraches(size):
 	maxBranches = size - 4
@@ -170,7 +170,7 @@ def getArchitecture():
 			if remaining_nodes == remaining_branches:
 				can_be_edge = False
 			if remaining_branches == 0:
-				can_be_node = False 
+				can_be_node = False
 			lastfloor = findNodeCandidate(all_floors,depth,can_be_edge,can_be_node)
 			# if no candidate was found the NET got deeper
 			if lastfloor.level == depth:
@@ -183,10 +183,10 @@ def getArchitecture():
 			remaining_nodes -=1
 
 	return all_floors
-	
+
 	#for floor in all_floors:
 	#	print (f"level:{floor.level},edge:{floor.is_edge},childs:{len(floor.childs)}")
-	
+
 def setID(floor,cnt):
 	cnt+=1
 	floor.id = cnt
@@ -196,7 +196,7 @@ def setID(floor,cnt):
 
 def setIDs(floors):
 	setID(floors[0],0)
-	
+
 def populateLevel(floorRandom,floors):
 	nextLevel = []
 	for floor in floors:
@@ -227,7 +227,7 @@ def getDificulty():
 	print("4-Advanced Difficulty | DV12 | Normal interface level 8 | Deadly bottom inteface level: 6")
 	try:
 		dificulty = int(input("Dificulty:"))
-	except: 
+	except:
 		print("\n!!ERROR!!")
 		print("Provide numbers between 1 and 4")
 		print("!!ERROR!!\n")
@@ -254,9 +254,9 @@ def printLegendRecursive(floor,difficulty):
 
 def printLegend(floors, difficulty):
 	print ("Legend:")
-	floor = floors[0]	
+	floor = floors[0]
 	print (f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}")
-	floor = floor.childs[0]	
+	floor = floor.childs[0]
 	print (f"{floor.id}: {INTERIOR_LOBBY[floor.occupancy-1]}")
 	for child in floor.childs:
 		printLegendRecursive(child,difficulty)
@@ -265,7 +265,7 @@ def printLegend(floors, difficulty):
 def on_press(key):
 	if key == keyboard.Key.esc:
 		# Stop listener
-		global exitApp 
+		global exitApp
 		exitApp = True
 		return False
 	if key == keyboard.Key.enter:
@@ -289,5 +289,3 @@ while not exitApp:
 	print("Press ESC to leave, press ENTER to generate new...\n")
 	with keyboard.Listener(on_press=on_press) as listener:
 		listener.join()
-
-	
