@@ -1,0 +1,7 @@
+{
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true
+}
