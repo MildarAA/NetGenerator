@@ -190,14 +190,12 @@ def printArchitecture(floors):
         print(strRow)
 
 
-"""
-# minimal size is 5 for 1 Branch,
-1 entry, 2 second floor, 3 last floor, 4 - nonBranched floor, 5 - 1st possible branch
-So maximal branches is: size - 4
-"""
-
-
 def getNumberOfBraches(size):
+    """
+    minimal size is 5 for 1 Branch,
+    1 entry, 2 second floor, 3 last floor, 4 - nonBranched floor, 5 - 1st possible branch
+    So maximal branches is: size - 4
+    """
     maxBranches = size - 4
     n_branches = 0
     while n_branches < maxBranches:
